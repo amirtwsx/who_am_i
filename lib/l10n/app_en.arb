@@ -1,0 +1,14 @@
+{
+  "@@locale": "en",
+  "about": "About",
+  "settings": "Settings",
+  "startGame": "Start Game",
+  "customGame": "Custom Game",
+  "language": "Language",
+  "theme": "Theme",
+  "system": "System",
+  "light": "Light",
+  "dark": "Dark",
+  "info": "Info",
+  "close": "Close"
+}
