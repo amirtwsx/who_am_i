@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'home_page.dart';
 import 'theme_notifier.dart';
 import 'locale_provider.dart';
+import 'auth_provider.dart';
+import 'login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,14 +24,36 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeNotifier()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()), // ✅ добавлено
       ],
       child: const WhoAmIApp(),
     ),
   );
 }
 
-class WhoAmIApp extends StatelessWidget {
+class WhoAmIApp extends StatefulWidget {
   const WhoAmIApp({super.key});
+
+  @override
+  State<WhoAmIApp> createState() => _WhoAmIAppState();
+}
+
+class _WhoAmIAppState extends State<WhoAmIApp> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Provider.of<LocaleProvider>(context).addListener(_onLocaleChanged);
+  }
+
+  @override
+  void dispose() {
+    Provider.of<LocaleProvider>(context, listen: false).removeListener(_onLocaleChanged);
+    super.dispose();
+  }
+
+  void _onLocaleChanged() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,21 +73,16 @@ class WhoAmIApp extends StatelessWidget {
         Locale('en'),
       ],
       localizationsDelegates: const [
-        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      localeResolutionCallback: (locale, supportedLocales) {
-        if (locale == null) return const Locale('kk');
-        for (var supported in supportedLocales) {
-          if (supported.languageCode == locale.languageCode) {
-            return supported;
-          }
-        }
-        return const Locale('kk');
-      },
-      home: const HomePage(),
+      // 🔁 Здесь логика: если авторизован — показать HomePage, иначе LoginPage
+      home: Consumer<AuthProvider>(
+        builder: (context, auth, _) {
+          return auth.isLoggedIn ? const HomePage() : const LoginPage();
+        },
+      ),
     );
   }
 }
