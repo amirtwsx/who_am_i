@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'home_page.dart';
 import 'theme_notifier.dart';
 import 'locale_provider.dart';
+import 'auth_provider.dart';
+import 'login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +24,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeNotifier()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()), // ✅ добавлено
       ],
       child: const WhoAmIApp(),
     ),
@@ -74,7 +77,12 @@ class _WhoAmIAppState extends State<WhoAmIApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: const HomePage(),
+      // 🔁 Здесь логика: если авторизован — показать HomePage, иначе LoginPage
+      home: Consumer<AuthProvider>(
+        builder: (context, auth, _) {
+          return auth.isLoggedIn ? const HomePage() : const LoginPage();
+        },
+      ),
     );
   }
 }
