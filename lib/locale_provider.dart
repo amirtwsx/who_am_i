@@ -6,6 +6,7 @@ class LocaleProvider extends ChangeNotifier {
   Locale get locale => _locale;
 
   void setLocale(String code) {
+    if (code == _locale.languageCode) return;
     _locale = Locale(code);
     notifyListeners();
   }

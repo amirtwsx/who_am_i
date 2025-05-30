@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
         children: [
           // Фон (замени путь если нужно)
           Image.asset(
-            'assets/bg.jpg',
+            'assets/game.avif',
             fit: BoxFit.cover,
           ),
 

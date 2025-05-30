@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'theme_notifier.dart';
 import 'locale_provider.dart';
@@ -19,7 +18,7 @@ class _SettingsPageState extends State<SettingsPage> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.about),
+        title: const Text('About'),
         content: const SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,7 +42,7 @@ class _SettingsPageState extends State<SettingsPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.close),
+            child: const Text('Close'),
           )
         ],
       ),
@@ -58,47 +57,46 @@ class _SettingsPageState extends State<SettingsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settings),
+        title: const Text('Settings'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(AppLocalizations.of(context)!.theme,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text('Theme', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ListTile(
-              title: Text(AppLocalizations.of(context)!.system),
-              leading: Radio(
+              title: const Text('System'),
+              leading: Radio<ThemeMode>(
                 value: ThemeMode.system,
                 groupValue: currentTheme,
                 onChanged: (value) => themeNotifier.setTheme(value!),
               ),
             ),
             ListTile(
-              title: Text(AppLocalizations.of(context)!.light),
-              leading: Radio(
+              title: const Text('Light'),
+              leading: Radio<ThemeMode>(
                 value: ThemeMode.light,
                 groupValue: currentTheme,
                 onChanged: (value) => themeNotifier.setTheme(value!),
               ),
             ),
             ListTile(
-              title: Text(AppLocalizations.of(context)!.dark),
-              leading: Radio(
+              title: const Text('Dark'),
+              leading: Radio<ThemeMode>(
                 value: ThemeMode.dark,
                 groupValue: currentTheme,
                 onChanged: (value) => themeNotifier.setTheme(value!),
               ),
             ),
             const SizedBox(height: 24),
-            Text(AppLocalizations.of(context)!.language,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text('Language', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             DropdownButton<String>(
               value: _selectedLanguage,
               onChanged: (value) {
-                setState(() => _selectedLanguage = value!);
-                Provider.of<LocaleProvider>(context, listen: false).setLocale(value!);
+                if (value == null) return;
+                setState(() => _selectedLanguage = value);
+                localeProvider.setLocale(value);
               },
               items: const [
                 DropdownMenuItem(value: 'kk', child: Text('Қазақ')),
@@ -110,7 +108,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ElevatedButton.icon(
               onPressed: _showInfoDialog,
               icon: const Icon(Icons.info_outline),
-              label: Text(AppLocalizations.of(context)!.info),
+              label: const Text('Info'),
             ),
           ],
         ),
